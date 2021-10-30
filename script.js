@@ -11,10 +11,13 @@ const inputDuration = document.querySelector(".form__input--duration");
 const inputCadence = document.querySelector(".form__input--cadence");
 const inputElevation = document.querySelector(".form__input--elevation");
 
-let map, mapEvent;
-
 class App {
-  constructor() {}
+  #map;
+  #mapEvent;
+
+  constructor() {
+    this._getPosition();
+  }
 
   _getPosition() {
     navigator.geolocation.getCurrentPosition(this._loadMap, function () {
@@ -46,6 +49,8 @@ class App {
 
   _newWorkout() {}
 }
+
+const app = new App();
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
