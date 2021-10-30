@@ -20,24 +20,27 @@ class App {
   }
 
   _getPosition() {
-    navigator.geolocation.getCurrentPosition(this._loadMap, function () {
-      alert("Error: Could not get your location");
-    });
+    navigator.geolocation.getCurrentPosition(
+      this._loadMap.bind(this),
+      function () {
+        alert("Error: Could not get your location");
+      }
+    );
   }
 
   _loadMap(position) {
     const { latitude, longitude } = position.coords;
     const coords = [latitude, longitude];
 
-    map = L.map("map").setView(coords, 15);
+    this.#map = L.map("map").setView(coords, 15);
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(map);
+    }).addTo(this.#map);
 
-    map.on("click", function (mapE) {
-      mapEvent = mapE;
+    this.#map.on("click", function (mapE) {
+      this.#mapEvent = mapE;
       form.classList.remove("hidden");
       inputDistance.focus();
     });
