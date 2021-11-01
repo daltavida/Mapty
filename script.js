@@ -95,6 +95,20 @@ class App {
   _newWorkout(e) {
     e.preventDefault();
 
+    const type = inputType.value;
+    const distance = inputDistance.value;
+    const duration = inputDuration.value;
+
+    if (type === "running") {
+      const cadence = inputCadence.value;
+      if (!Number.isFinite(distance))
+        return alert("Distance must be a positive number");
+    }
+
+    if (type === "cycling") {
+      const elevation = inputElevation.value;
+    }
+
     inputDistance.value =
       inputDuration.value =
       inputCadence.value =
