@@ -93,6 +93,8 @@ class App {
   }
 
   _newWorkout(e) {
+    const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
+
     e.preventDefault();
 
     const type = inputType.value;
@@ -101,8 +103,8 @@ class App {
 
     if (type === "running") {
       const cadence = inputCadence.value;
-      if (!Number.isFinite(distance))
-        return alert("Distance must be a positive number");
+      if (!Number.isFinite(distance) || !Number.isFinite(duration) || !Number.isFinite(cadence)) {
+        return alert("Inputs must be positive numbers");
     }
 
     if (type === "cycling") {
