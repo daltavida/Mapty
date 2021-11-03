@@ -89,7 +89,6 @@ class App {
   }
 
   _toggleElevationField() {
-    console.log("toggle");
     inputElevation.closest(".form__row").classList.toggle("form__row--hidden");
     inputCadence.closest(".form__row").classList.toggle("form__row--hidden");
   }
@@ -118,7 +117,6 @@ class App {
       }
 
       workout = new Running([lat, lng], distance, duration, cadence);
-      this.#workouts.push(workout);
     }
 
     if (type === "cycling") {
@@ -131,15 +129,19 @@ class App {
       }
 
       workout = new Cycling([lat, lng], distance, duration, elevation);
-      this.#workouts.push(workout);
     }
+
+    this.#workouts.push(workout);
+    this.renderWorkoutMarker(workout);
 
     inputDistance.value =
       inputDuration.value =
       inputCadence.value =
       inputElevation.value =
         "";
+  }
 
+  renderWorkoutMarker(workout) {
     L.marker([lat, lng])
       .addTo(this.#map)
       .bindPopup(
@@ -148,10 +150,10 @@ class App {
           minWith: 100,
           autoClose: false,
           closeOnClick: false,
-          className: "running-popup",
+          className: `${type}-popup`,
         })
       )
-      .setPopupContent(`<p>Latitude: ${lat}</p><p>Longitude: ${lng}</p>`)
+      .setPopupContent(workout.distance)
       .openPopup();
   }
 }
