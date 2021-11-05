@@ -227,6 +227,8 @@ class App {
         </div>
       </li>`;
     }
+
+    form.insertAdjacentElement("afterend", html);
   }
 }
 
