@@ -41,7 +41,7 @@ class Workout {
   }
 
   click() {
-    this.click++;
+    this.clicks++;
   }
 }
 
@@ -101,7 +101,7 @@ class App {
     const { latitude, longitude } = position.coords;
     const coords = [latitude, longitude];
 
-    this.#map = L.map("map").setView(coords, #mapZoom);
+    this.#map = L.map("map").setView(coords, this.#mapZoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
@@ -258,12 +258,14 @@ class App {
       (work) => work.id === workoutEl.dataset.id
     );
 
-    this.#map.setView(workout.coords, #mapZoom, {
+    this.#map.setView(workout.coords, this.#mapZoom, {
       animate: true,
       pan: {
         duration: 1,
-      }
-    })
+      },
+    });
+
+    workout.click();
   }
 }
 
