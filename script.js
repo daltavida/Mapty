@@ -83,6 +83,7 @@ class App {
 
   constructor() {
     this._getPosition();
+    this._getLocalStorage();
     form.addEventListener("submit", this._newWorkout.bind(this));
     inputType.addEventListener("change", this._toggleElevationField());
     containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
@@ -272,6 +273,13 @@ class App {
 
   _setLocalStorage() {
     localStorage.setItem("workouts", JSON.stringify(this.#workouts));
+  }
+
+  _getLocalStorage() {
+    const workouts = JSON.parse(localStorage.getItem("workouts"));
+    if (!workouts) return;
+
+    this.#workouts = workouts;
   }
 }
 
