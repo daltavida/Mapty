@@ -272,7 +272,7 @@ class App {
       },
     });
 
-    workout.click();
+    // workout.click();
   }
 
   _setLocalStorage() {
