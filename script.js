@@ -110,6 +110,10 @@ class App {
     }).addTo(this.#map);
 
     this.#map.on("click", this._showForm.bind(this));
+
+    this.#workouts.forEach((workout) => {
+      this._renderWorkoutMarker(workout);
+    });
   }
 
   _showForm(mapE) {
@@ -280,6 +284,9 @@ class App {
     if (!workouts) return;
 
     this.#workouts = workouts;
+    this.#workouts.forEach((workout) => {
+      this._renderWorkout(workout);
+    });
   }
 }
 
