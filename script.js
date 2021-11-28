@@ -85,17 +85,18 @@ class App {
     this._getPosition();
     this._getLocalStorage();
     form.addEventListener("submit", this._newWorkout.bind(this));
-    inputType.addEventListener("change", this._toggleElevationField());
+    inputType.addEventListener("change", this._toggleElevationField);
     containerWorkouts.addEventListener("click", this._moveToPopup.bind(this));
   }
 
   _getPosition() {
-    navigator.geolocation.getCurrentPosition(
-      this._loadMap.bind(this),
-      function () {
-        alert("Error: Could not get your location");
-      }
-    );
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(
+        this._loadMap.bind(this),
+        function () {
+          alert("Could not get your position");
+        }
+      );
   }
 
   _loadMap(position) {
@@ -111,8 +112,8 @@ class App {
 
     this.#map.on("click", this._showForm.bind(this));
 
-    this.#workouts.forEach((workout) => {
-      this._renderWorkoutMarker(workout);
+    this.#workouts.forEach((work) => {
+      this._renderWorkoutMarker(work);
     });
   }
 
@@ -130,9 +131,7 @@ class App {
         "";
     form.style.display = "none";
     form.classList.add("hidden");
-    setTimeout(() => {
-      form.style.display = "grid";
-    }, 1000);
+    setTimeout(() => (form.style.display = "grid"), 1000);
   }
 
   _toggleElevationField() {
@@ -143,14 +142,13 @@ class App {
   _newWorkout(e) {
     const validInputs = (...inputs) =>
       inputs.every((inp) => Number.isFinite(inp));
-    const allPositive = (...inputs) => inputs.every((el) => el > 0);
+    const allPositive = (...inputs) => inputs.every((inp) => inp > 0);
 
     e.preventDefault();
 
     const type = inputType.value;
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
-
     const { lat, lng } = this.#mapEvent.latlng;
     let workout;
 
@@ -183,7 +181,7 @@ class App {
 
     this._renderWorkout(workout);
 
-    this.hideForm();
+    this._hideForm();
 
     this._setLocalStorage();
   }
@@ -194,7 +192,7 @@ class App {
       .bindPopup(
         L.popup({
           maxWidth: 250,
-          minWith: 100,
+          minWidth: 100,
           autoClose: false,
           closeOnClick: false,
           className: `${workout.type}-popup`,
@@ -208,22 +206,23 @@ class App {
 
   _renderWorkout(workout) {
     let html = `
-    <li class="workout workout--${workout.type}" data-id="${workout.id}">
-      <h2 class="workout__title">${workout.description}</h2>
-      <div class="workout__details">
-        <span class="workout__icon">${
-          workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
-        }</span>
-        <span class="workout__value">${workout.distance}</span>
-        <span class="workout__unit">km</span>
-      </div>
-      <div class="workout__details">
-        <span class="workout__icon">⏱</span>
-        <span class="workout__value">${workout.duration}</span>
-        <span class="workout__unit">min</span>
-      </div>`;
+      <li class="workout workout--${workout.type}" data-id="${workout.id}">
+        <h2 class="workout__title">${workout.description}</h2>
+        <div class="workout__details">
+          <span class="workout__icon">${
+            workout.type === "running" ? "🏃‍♂️" : "🚴‍♀️"
+          }</span>
+          <span class="workout__value">${workout.distance}</span>
+          <span class="workout__unit">km</span>
+        </div>
+        <div class="workout__details">
+          <span class="workout__icon">⏱</span>
+          <span class="workout__value">${workout.duration}</span>
+          <span class="workout__unit">min</span>
+        </div>
+    `;
 
-    if (workout.type === "running") {
+    if (workout.type === "running")
       html += `
         <div class="workout__details">
           <span class="workout__icon">⚡️</span>
@@ -235,14 +234,14 @@ class App {
           <span class="workout__value">${workout.cadence}</span>
           <span class="workout__unit">spm</span>
         </div>
-      </li>`;
-    }
+      </li>
+      `;
 
-    if (workout.type === "cycling") {
+    if (workout.type === "cycling")
       html += `
         <div class="workout__details">
           <span class="workout__icon">⚡️</span>
-          <span class="workout__value">${workout.speed}</span>
+          <span class="workout__value">${workout.speed.toFixed(1)}</span>
           <span class="workout__unit">km/h</span>
         </div>
         <div class="workout__details">
@@ -250,13 +249,14 @@ class App {
           <span class="workout__value">${workout.elevationGain}</span>
           <span class="workout__unit">m</span>
         </div>
-      </li>`;
-    }
+      </li>
+      `;
 
-    form.insertAdjacentElement("afterend", html);
+    form.insertAdjacentHTML("afterend", html);
   }
 
   _moveToPopup(e) {
+    if (!this.#map) return;
     const workoutEl = e.target.closest(".workout");
 
     if (!workoutEl) return;
@@ -280,12 +280,14 @@ class App {
   }
 
   _getLocalStorage() {
-    const workouts = JSON.parse(localStorage.getItem("workouts"));
-    if (!workouts) return;
+    const data = JSON.parse(localStorage.getItem("workouts"));
 
-    this.#workouts = workouts;
-    this.#workouts.forEach((workout) => {
-      this._renderWorkout(workout);
+    if (!data) return;
+
+    this.#workouts = data;
+
+    this.#workouts.forEach((work) => {
+      this._renderWorkout(work);
     });
   }
 
